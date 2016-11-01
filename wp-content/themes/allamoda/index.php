@@ -20,51 +20,34 @@ get_header(); ?>
     <section class="home-section">
       <h2 class="heading--1">NEW COLLECTION</h2>
       <ul class="grid listing">
-        <li class="grid__2"> <a href="<?php echo get_permalink( 30 ); ?>"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/product.jpg"></a>
-          <div class="home__product-info">
-            <h3 class="home__product-info__name">Product name </h3>
-          </div>
-        </li>
-        <li class="grid__2"> <a href="<?php echo get_permalink( 30 ); ?>"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/product.jpg"></a>
-          <div class="home__product-info">
-            <h3 class="home__product-info__name">Product name </h3>
-          </div>
-        </li>
-        <li class="grid__2"> <a href="<?php echo get_permalink( 30 ); ?>"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/product.jpg"></a>
-          <div class="home__product-info">
-            <h3 class="home__product-info__name">Product name </h3>
-          </div>
-        </li>
-        <li class="grid__2"> <a href="<?php echo get_permalink( 30 ); ?>"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/product.jpg"></a>
-          <div class="home__product-info">
-            <h3 class="home__product-info__name">Product name </h3>
-          </div>
-        </li>
-        <li class="grid__2"> <a href="<?php echo get_permalink( 30 ); ?>"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/product.jpg"></a>
-          <div class="home__product-info">
-            <h3 class="home__product-info__name">Product name </h3>
-          </div>
-        </li>
-        <li class="grid__2"> <a href="<?php echo get_permalink( 30 ); ?>"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/product.jpg"></a>
-          <div class="home__product-info">
-            <h3 class="home__product-info__name">Product name </h3>
-          </div>
-        </li>
-        <li class="grid__2"> <a href="<?php echo get_permalink( 30 ); ?>"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/product.jpg"></a>
-          <div class="home__product-info">
-            <h3 class="home__product-info__name">Product name </h3>
-          </div>
-        </li>
-        <li class="grid__2"> <a href="<?php echo get_permalink( 30 ); ?>"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/product.jpg"></a>
-          <div class="home__product-info">
-            <h3 class="home__product-info__name">Product name </h3>
-          </div>
-        </li>
-        <li class="grid__2"> <a href="<?php echo get_permalink( 30 ); ?>"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/product.jpg"></a>
-          <div class="home__product-info">
-            <h3 class="home__product-info__name">Product name </h3>
-          </div>
-        </li>
+        <?php
+        //Get post content
+        $args = array(
+          'posts_per_page'   => -1,
+          'order'            => 'DESC',
+          'post_type'        => 'products',
+          'post_status'      => 'publish',
+          'suppress_filters' => true
+        );
+
+        $posts_array  = get_posts( $args );
+
+        foreach($posts_array as $key => $value){
+          $img = get_the_post_thumbnail( $value->ID, 'medium' );
+          if( !empty($img) ){
+            $image_url = $img;
+          } else {
+            $image_url = esc_url( get_template_directory_uri() ) . '/images/product.jpg';
+          }
+          ?>
+          <li class="grid__2"> <a href="<?php echo get_permalink( $value->ID ); ?>"><?php echo $image_url; ?></a>
+            <div class="home__product-info">
+              <h3 class="home__product-info__name"><?php echo $value->title; ?></h3>
+            </div>
+          </li>
+        <?php
+        }
+        ?>
       </ul>
     </section>
     <section class="home-section">
