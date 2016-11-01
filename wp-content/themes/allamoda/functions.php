@@ -117,5 +117,19 @@ function allamoda_scripts() {
   wp_enqueue_script( 'main', get_template_directory_uri() . '/js/main.js', array(), '1.0', true );
   //wp_enqueue_script( 'twentyfifteen-script', get_template_directory_uri() . '/js/functions.js', array( 'jquery' ), '20150330', true );
 }
-
 add_action( 'wp_enqueue_scripts', 'allamoda_scripts' );
+
+
+/**
+ * Var dump content
+ *
+ * @since Allamoda 1.0
+ */
+function _dump($result = '', $e = 0) {
+  echo '<pre>';
+  print_r($result);
+  echo '</pre>';
+  if ($e) {
+    exit;
+  }
+}

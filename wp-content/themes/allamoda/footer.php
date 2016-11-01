@@ -11,6 +11,7 @@
 ?>
 
 </div>
+
 <footer>
   <ul class="footer__links">
     <li class="footer__links__rights">&copy;2016 Alla Moda. All rights reserved.</li>

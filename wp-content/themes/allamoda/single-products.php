@@ -29,7 +29,6 @@ get_header(); ?>
             <div class="pdp__right__inner">
               <h3 class="heading--2">DESCRIPTION</h3>
               <p>
-
                 Youtube sunglasses tank-traps Kowloon digital tube concrete dissident systema-ware. Youtube beef noodles office chrome alcohol car cartel disposable Kowloon human convenience store neon monofilament post-weathered assassin gang. Katana alcohol vehicle bridge uplink network numinous convenience store San Francisco rain. Sentient pistol geodesic boat industrial grade voodoo god corporation youtube woman. <a href="javascript:void(0);">Leather Care</a>
               </p>
               <h3 class="heading--2">MEASUREMENT</h3>
