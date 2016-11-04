@@ -8,17 +8,18 @@
  * @subpackage Allamoda
  * @since Allamoda 1.0
  */
+$category = get_category( get_query_var( 'cat' ) );
+$cat_id = $category->cat_ID;
+//_dump($category, 1);
 get_header(); ?>
 
   <main class="content">
     <div class="products content__wrapper">
       <section class="home-section">
-        <h2 class="heading--1">PRODUCT CATEGORY <?php echo the_ID(); ?></h2>
+        <h2 class="heading--1"><?php echo $category->name; ?></h2>
         <ul class="grid listing">
 
         <?php
-          $category = get_category( get_query_var( 'cat' ) );
-          $cat_id = $category->cat_ID;
 
           //Get post content
           $args = array(

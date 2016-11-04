@@ -86,7 +86,7 @@ $menuitems = wp_get_nav_menu_items( $menu->term_id, array( 'order' => 'DESC' ) )
       <?php $submenu = false; endif; ?>
       <?php $count++; endforeach; ?>
 
-    <li><a href="javascript:void(0);">Vietnamese</a></li>
+<!--    <li><a href="javascript:void(0);">Vietnamese</a></li>-->
     <li class="offscreen__menu__social">
       <ul>
         <li> <a target="_blank" href="https://www.facebook.com/byAllaModa"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/icon-fb.png"></a></li>

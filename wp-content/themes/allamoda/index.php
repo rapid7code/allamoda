@@ -18,7 +18,7 @@ get_header(); ?>
 <main class="content">
   <div class="home content__wrapper">
     <section class="home-section">
-      <h2 class="heading--1">NEW COLLECTION</h2>
+      <h2 class="heading--1"><?php _e( 'NEW COLLECTION', 'allamoda' ) ?></h2>
       <ul class="grid listing">
         <?php
         //Get post content
@@ -42,7 +42,7 @@ get_header(); ?>
           ?>
           <li class="grid__2"> <a href="<?php echo get_permalink( $value->ID ); ?>"><?php echo $image_url; ?></a>
             <div class="home__product-info">
-              <h3 class="home__product-info__name"><?php echo $value->title; ?></h3>
+              <h3 class="home__product-info__name"><?php echo $value->post_title; ?></h3>
             </div>
           </li>
         <?php
@@ -50,28 +50,36 @@ get_header(); ?>
         ?>
       </ul>
     </section>
+    <?php
+    $args = array(
+      'posts_per_page'   => -1,
+      'order'            => 'DESC',
+      'post_type'        => 'lookbook',
+      'post_status'      => 'publish',
+      'suppress_filters' => true
+    );
+
+    $posts_array  = get_posts( $args );
+    $data = $posts_array[0];
+
+    $image_data = array();
+    $image_list = get_field('image_list', $data->ID);
+    foreach($image_list as $value){
+      $tmp = new stdClass();
+      $tmp->medium = $value['sizes']['medium_large'];
+      $tmp->medium_large = $value['sizes']['post-thumbnail'];
+      $image_data[] = $tmp;
+    }
+    ?>
     <section class="home-section">
-      <h3 class="heading--1">SUMMER 2016 LOOKBOOK</h3>
+      <h3 class="heading--1"><?php echo $data->post_title; ?></h3>
       <div data-module="homeSlider" class="home__carousel">
         <div class="home__carousel__items grid">
-          <div class="home__carousel__item grid__3">
-            <div class="image"> <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/lookbook-portrait.jpg"></div>
-          </div>
-          <div class="home__carousel__item grid__3">
-            <div class="image"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/lookbook-portrait.jpg"></div>
-          </div>
-          <div class="home__carousel__item grid__6">
-            <div class="image"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/lookbook-landscape.jpg"></div>
-          </div>
-          <div class="home__carousel__item grid__3">
-            <div class="image"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/lookbook-portrait.jpg"></div>
-          </div>
-          <div class="home__carousel__item grid__3">
-            <div class="image"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/lookbook-portrait.jpg"></div>
-          </div>
-          <div class="home__carousel__item grid__6">
-            <div class="image"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/lookbook-landscape.jpg"></div>
-          </div>
+          <?php $count=1; foreach($image_data as $key=>$img): if($count%3==0){$class="grid__6"; $img_src = $img->medium_large; }else{$class="grid__3";$img_src = $img->medium; }?>
+            <div class="home__carousel__item <?php echo $class; ?>">
+              <div class="image"> <img src="<?php echo esc_url( $img_src ); ?>"></div>
+            </div>
+            <?php $count++; endforeach; ?>
         </div>
         <button class="home__carousel__prev"></button>
         <button class="home__carousel__next"></button>

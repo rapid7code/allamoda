@@ -69,9 +69,10 @@ function allamoda_setup() {
 	 * See: https://codex.wordpress.org/Function_Reference/add_theme_support#Post_Thumbnails
 	 */
 	add_theme_support( 'post-thumbnails' );
-	set_post_thumbnail_size( 825, 510, true );
+  set_post_thumbnail_size( 940, 627, true );
 
-	// This theme uses wp_nav_menu() in two locations.
+
+  // This theme uses wp_nav_menu() in two locations.
 	register_nav_menus( array(
 		'primary' => __( 'Primary Menu',      'allamoda' ),
 		'social'  => __( 'Social Links Menu', 'allamoda' ),
