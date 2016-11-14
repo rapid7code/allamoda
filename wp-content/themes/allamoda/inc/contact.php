@@ -28,8 +28,15 @@ function submitContact(){
       $wpdb->insert($wpdb->prefix . 'contacts', $data);
       $wpdb->insert_id;
 
+      //Send Email
+      $emailAdmin = 'vubactest1@gmail.com';
+      $result = array( "fullname" => $fullname, "email" => $email, "message" => $message );
+      //$send = new SendEmailEDM();
+      //$send->SendEDM($emailAdmin, $result);
+
       $hasError = 0;
       $msg = 'Success';
+      wp_redirect(home_url('/'));exit;
     }
 
     $return_data['error_code'] = $hasError;

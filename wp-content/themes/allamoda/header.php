@@ -15,6 +15,7 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="shortcut icon" href="<?php echo esc_url( get_template_directory_uri() ); ?>/images/favicon/favicon.ico" />
   <link rel="apple-touch-icon" sizes="57x57" href="<?php echo esc_url( get_template_directory_uri() ); ?>/images/favicon/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="<?php echo esc_url( get_template_directory_uri() ); ?>/images/favicon/apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="<?php echo esc_url( get_template_directory_uri() ); ?>/images/favicon/apple-icon-72x72.png">
@@ -33,6 +34,7 @@
 </head>
 
 <body>
+<div id="fb-root"></div>
 <!--[if lt IE 10]>
 <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
@@ -45,48 +47,66 @@ $menu_name = 'primary';
 $locations = get_nav_menu_locations();
 $menu = wp_get_nav_menu_object( $locations[ $menu_name ] );
 $menuitems = wp_get_nav_menu_items( $menu->term_id, array( 'order' => 'DESC' ) );
-?>
 
+?>
 <nav class="offscreen">
   <ul class="offscreen__menu">
     <?php
     $count = 0;
     $submenu = false;
 
-    foreach( $menuitems as $item ):
-    $title = $item->title;
-//    $link = str_replace( "/category/", "/", $item->url );
-    $link = $item->url;
-    $id = $item->ID;
+    foreach( $menuitems as $item ){
+      $title = $item->title;
+      $link = $item->url;
+      $id = $item->ID;
 
-    // item does not have a parent so menu_item_parent equals 0 (false)
-    if ( !$item->menu_item_parent ):
+      // item does not have a parent so menu_item_parent equals 0 (false)
+      if ( !$item->menu_item_parent ){
 
-    // save this id for later comparison with sub-menu items
-    $parent_id = $item->ID;
-    ?>
-    <li>
-      <a href="<?php echo $link; ?>" class="title">
-        <?php echo $title; ?>
-      </a>
-      <?php endif; ?>
-      <?php if ( $parent_id == $item->menu_item_parent ): ?>
-      <?php if ( !$submenu ): $submenu = true; ?>
-        <ul class="offscreen__menu__menu">
-          <?php endif; ?>
-          <li>
-            <a href="<?php echo $link; ?>" class="title"><?php echo $title; ?></a>
-          </li>
-          <?php if ( $menuitems[ $count + 1 ]->menu_item_parent != $parent_id && $submenu ): ?>
-        </ul>
-        <?php $submenu = false; endif; ?>
-      <?php endif; ?>
-      <?php if ( $menuitems[ $count + 1 ]->menu_item_parent != $parent_id ): ?>
+        // save this id for later comparison with sub-menu items
+        $parent_id = $item->ID;
+        ?>
+        <li>
+          <a href="<?php echo $link; ?>" class="title">
+            <?php echo $title; ?>
+          </a>
+        <?php } ?>
+
+        <?php if ( $parent_id == $item->menu_item_parent && $item->object == 'category' ){
+          //Get post content
+          $args = array(
+            'posts_per_page'   => 1,
+            'category'         => $item->object_id,
+            'order'            => 'DESC',
+            'post_type'        => 'products',
+            'post_status'      => 'publish',
+            'suppress_filters' => true
+          );
+
+          $posts_array  = get_posts( $args );
+          if( $posts_array ) {
+        ?>
+        <?php if ( !$submenu ){ $submenu = true; } ?>
+          <ul class="offscreen__menu__menu">
+            <li>
+              <a href="<?php echo $link; ?>" class="title"><?php echo $title; ?></a>
+            </li>
+            <?php if ( $menuitems[ $count + 1 ]->menu_item_parent != $parent_id && $submenu ){ $submenu = false;  } ?>
+          </ul>
+          <?php } } ?>
+          <?php if ( $menuitems[ $count + 1 ]->menu_item_parent != $parent_id ) { $submenu = false; } ?>
+
+          <?php
+          if( $parent_id == $item->menu_item_parent && $item->object == 'custom' ){ ?>
+            <ul class="offscreen__menu__menu">
+              <li>
+                <a href="<?php echo $link; ?>" class="title"><?php echo $title; ?></a>
+              </li>
+            </ul>
+          <?php } ?>
       </li>
-      <?php $submenu = false; endif; ?>
-      <?php $count++; endforeach; ?>
+      <?php $count++; } ?>
 
-<!--    <li><a href="javascript:void(0);">Vietnamese</a></li>-->
     <li class="offscreen__menu__social">
       <ul>
         <li> <a target="_blank" href="https://www.facebook.com/byAllaModa"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/icon-fb.png"></a></li>

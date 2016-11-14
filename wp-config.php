@@ -65,6 +65,11 @@ define('NONCE_SALT',       '#fiA2`;p,DI4U@s-j7NB8v~l!o3RzT[$Q8U&`U=#XVp6GFZp9vRt
  */
 $table_prefix  = 'all_';
 
+define('SMTP_HOST', 'mail.byallamoda.com');//On server localhost
+define('SMTP_USER', 'info@byallamoda.com'); //on server null
+define('SMTP_PASSWORD', 'ms3rQHgqT{hQ'); //on server null
+define('SMTP_AUTH', 'false');
+
 /**
  * For developers: WordPress debugging mode.
  *

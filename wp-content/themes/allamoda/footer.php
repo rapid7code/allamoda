@@ -20,5 +20,27 @@
 
 <?php wp_footer(); ?>
 
+<?php
+$ip = geoip_detect2_get_client_ip();
+$record = geoip_detect2_get_info_from_ip($ip, NULL);
+$isoCode = $record->country->isoCode;
+
+if ($isoCode == 'VN') { ?>
+  <script>
+    jQuery(document).ready(function () {
+      var welcome = Common.GetCookie('welcome');
+      if (welcome == '') {
+        Common.SetCookies('welcome', true, 0);
+
+        var current_URL = jQuery(location).attr('href');
+        if(!current_URL.includes("/vi/")){
+          window.location.href = jQuery(location).attr('href') + 'vi/';
+        }
+
+      }
+    });
+  </script>
+<?php } ?>
+
 </body>
 </html>

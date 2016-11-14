@@ -14,42 +14,55 @@
  * @since Allamoda 1.0
  */
 
+$subcats = allamoda_subcats_from_parentcat_by_NAME('products');
 get_header(); ?>
 <main class="content">
   <div class="home content__wrapper">
     <section class="home-section">
-      <h2 class="heading--1"><?php _e( 'NEW COLLECTION', 'allamoda' ) ?></h2>
-      <ul class="grid listing">
-        <?php
-        //Get post content
-        $args = array(
-          'posts_per_page'   => -1,
-          'order'            => 'DESC',
-          'post_type'        => 'products',
-          'post_status'      => 'publish',
-          'suppress_filters' => true
-        );
 
-        $posts_array  = get_posts( $args );
+      <?php foreach($subcats as $sc){ ?>
+        <h2 class="heading--1"><a href="<?php echo get_term_link($sc->slug, $sc->taxonomy); ?>"><?php echo $sc->name; ?></a></h2>
+        <ul class="grid listing">
+          <?php $args = array(
+            'post_type' => 'products',
+            'orderby' => 'meta_value_num',
+            'order' => 'DESC',
+            'posts_per_page' => -1,
+            'tax_query' => array(
+              array(
+                'taxonomy' => 'category',
+                'field'    => 'term_id',
+                'terms'    => $sc->cat_ID,
+              ),
+            ),
+          );
+          $q = new WP_Query( $args );
 
-        foreach($posts_array as $key => $value){
-          $img = get_the_post_thumbnail( $value->ID, 'medium' );
-          if( !empty($img) ){
-            $image_url = $img;
-          } else {
-            $image_url = esc_url( get_template_directory_uri() ) . '/images/product.jpg';
+          if ( $q->have_posts() ) {
+            while ( $q->have_posts() ) {
+              $q->the_post();
+              $img = $image = wp_get_attachment_image_src( get_post_thumbnail_id( get_the_ID() ), 'medium' );
+
+              if( !empty($img) ){
+                $image_url = $img[0];
+              } else {
+                $image_url = esc_url( get_template_directory_uri() ) . '/images/product.jpg';
+              }
+              ?>
+              <li class="grid__2"> <a href="<?php echo get_permalink( get_the_ID() ); ?>"><img src="<?php echo $image_url; ?>"></a>
+                <div class="home__product-info">
+                  <h3 class="home__product-info__name"><?php echo the_title(); ?></h3>
+                </div>
+              </li>
+            <?php
+            }
+            wp_reset_postdata();
           }
           ?>
-          <li class="grid__2"> <a href="<?php echo get_permalink( $value->ID ); ?>"><?php echo $image_url; ?></a>
-            <div class="home__product-info">
-              <h3 class="home__product-info__name"><?php echo $value->post_title; ?></h3>
-            </div>
-          </li>
-        <?php
-        }
-        ?>
-      </ul>
+        </ul>
+      <?php } ?>
     </section>
+
     <?php
     $args = array(
       'posts_per_page'   => -1,
@@ -85,7 +98,7 @@ get_header(); ?>
         <button class="home__carousel__next"></button>
       </div>
       <div class="grid">
-        <div class="grid__2"><a href="<?php echo get_permalink( get_page_by_path( 'lookbook' ) ); ?>" class="button">SEE LOOKBOOK</a></div>
+        <div class="grid__3"><a href="<?php echo get_permalink( get_page_by_path( 'lookbook' ) ); ?>" class="button">SEE LOOKBOOK</a></div>
       </div>
     </section>
   </div>

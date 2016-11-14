@@ -26,7 +26,11 @@ get_header(); ?>
         <div class="pdp__left">
           <div class="pdp__left__inner">
             <h1 class="pdp__left__name"><?php the_title(); ?></h1>
-            <div class="pdp__share mobile-hidden">Share<br><a href="javascript:void(0);"><img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/icon-fb.png"></a></div>
+            <div class="pdp__share mobile-hidden">Share<br>
+              <a href="javascript:void(0);" class="fb-custom-feed" data-title="<?php the_title(); ?>" data-picture="<?php echo $image_list[0]['sizes']['medium_large']; ?>" data-description="<?php echo strip_tags(get_the_content()); ?>">
+                <img src="<?php echo esc_url( get_template_directory_uri() ); ?>/images/icon-fb.png">
+              </a>
+            </div>
           </div>
           <div class="pdp__images">
             <div data-module="productSlider" class="pdp__images__slider">
@@ -48,9 +52,12 @@ get_header(); ?>
             <div class="pdp__right__inner">
               <h3 class="heading--2"><?php _e( 'DESCRIPTION', 'allamoda' ) ?></h3>
               <?php the_content(); ?>
-              <p><a href="javascript:void(0);"><?php _e( 'Leather Care', 'allamoda' ) ?></a></p>
+<!--              <p><a href="javascript:void(0);">--><?php //_e( 'Leather Care', 'allamoda' ) ?><!--</a></p>-->
               <h3 class="heading--2"><?php _e( 'MEASUREMENT', 'allamoda' ) ?></h3>
-              <p><?php _e( 'Width', 'allamoda' ) ?>: <?php echo $width[0]; ?><br><?php _e( 'Height', 'allamoda' ) ?>: <?php echo $height[0]; ?><br><?php _e( 'Strap length', 'allamoda' ) ?>: <?php echo $strap_length[0]; ?></p>
+              <p><?php echo $width[0] ? _e( 'Width', 'allamoda' ) . ': ' . $width[0] . '<br>' : '' ; ?>
+                <?php echo $height[0] ? _e( 'Height', 'allamoda' ) . ': ' . $height[0] . '<br>' : '' ; ?>
+                <?php echo $strap_length[0] ? _e( 'Strap length', 'allamoda' ) . ': ' . $strap_length[0] : '' ; ?>
+              </p>
             </div>
           </div>
         </div>
@@ -58,32 +65,48 @@ get_header(); ?>
     </div>
     <div class="content__wrapper text">
       <section class="home-section">
-        <h2 class="heading--1"><?php _e( 'NEW COLLECTION', 'allamoda' ) ?></h2>
-        <ul class="grid listing">
-          <?php
-            //for use in the loop, list 5 post titles related to first tag on current post
-            $args = array(
-              'posts_per_page' => -1,
-              'order' => 'DESC',
+        <?php $subcats = allamoda_subcats_from_parentcat_by_NAME('products'); ?>
+        <?php foreach($subcats as $sc){ ?>
+          <h2 class="heading--1"><a href="<?php echo get_term_link($sc->slug, $sc->taxonomy); ?>"><?php echo $sc->name; ?></a></h2>
+          <ul class="grid listing">
+            <?php $args = array(
               'post_type' => 'products',
-              'post_status' => 'publish',
-              'post__not_in' => array(get_the_ID()),
-              'suppress_filters' => true
+              'orderby' => 'meta_value_num',
+              'order' => 'DESC',
+              'posts_per_page' => -1,
+              'tax_query' => array(
+                array(
+                  'taxonomy' => 'category',
+                  'field'    => 'term_id',
+                  'terms'    => $sc->cat_ID,
+                ),
+              ),
             );
-            $posts_array = get_posts($args);
-            foreach ($posts_array as $key => $value) {
-              $img = get_the_post_thumbnail($value->ID, 'medium');
-              if (!empty($img)) {
-                $image_url = $img;
-              } else {
-                $image_url = esc_url(get_template_directory_uri()) . '/images/product.jpg';
+            $q = new WP_Query( $args );
+
+            if ( $q->have_posts() ) {
+              while ( $q->have_posts() ) {
+                $q->the_post();
+                $img = $image = wp_get_attachment_image_src( get_post_thumbnail_id( get_the_ID() ), 'medium' );
+
+                if( !empty($img) ){
+                  $image_url = $img[0];
+                } else {
+                  $image_url = esc_url( get_template_directory_uri() ) . '/images/product.jpg';
+                }
+                ?>
+                <li class="grid__2"> <a href="<?php echo get_permalink( get_the_ID() ); ?>"><img src="<?php echo $image_url; ?>"></a>
+                  <div class="home__product-info">
+                    <h3 class="home__product-info__name"><?php echo the_title(); ?></h3>
+                  </div>
+                </li>
+              <?php
               }
-              ?>
-              <li class="grid__2"><a href="<?php echo get_permalink($value->ID); ?>"><?php echo $image_url; ?></a></li>
-            <?php
+              wp_reset_postdata();
             }
-          ?>
-        </ul>
+            ?>
+          </ul>
+        <?php } ?>
       </section>
 
       <?php
